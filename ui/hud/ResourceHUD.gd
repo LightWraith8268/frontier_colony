@@ -44,13 +44,7 @@ func update_building_counts(counts: Dictionary) -> void:
 		var info := _build_buttons[building_id] as Dictionary
 		if info == null:
 			continue
-		var button := info.get("button") as Button
-		if button == null:
-			continue
-		var data := info.get("data") as Dictionary
-		var count: int = counts.get(building_id, 0)
-		button.text = _format_button_text(data, count)
-		info["count"] = count
+		info["count"] = counts.get(building_id, 0)
 	_refresh_build_availability()
 
 func update_power_status(power_data: Dictionary) -> void:
@@ -113,8 +107,7 @@ func _create_build_buttons() -> void:
 		var data: Dictionary = BUILDING_LIBRARY.get_data(building_id)
 		var button: Button = Button.new()
 		button.focus_mode = Control.FOCUS_ALL
-		button.text = _format_button_text(data, 0)
-		button.tooltip_text = _cost_to_text(data.get("cost", {}))
+		button.text = data.get("display_name", building_id.capitalize())
 		button.pressed.connect(_on_build_button_pressed.bind(building_id))
 		build_buttons.add_child(button)
 		_build_buttons[building_id] = {
@@ -122,6 +115,7 @@ func _create_build_buttons() -> void:
 			"data": data,
 			"count": 0
 		}
+	_refresh_build_availability()
 
 func _format_resource_line(resource_name: String, value: float) -> String:
 	var flow := _flow_summary.get(resource_name, {}) as Dictionary
@@ -145,21 +139,42 @@ func _format_resource_tooltip(resource_name: String) -> String:
 	var consumption := float(flow.get("consumption", 0.0))
 	return "Production: %.2f\nConsumption: %.2f" % [production, consumption]
 
+func _requirements_met(requirements: Dictionary) -> bool:
+	if requirements == null or requirements.is_empty():
+		return true
+	for req_id in requirements.keys():
+		var required := int(requirements[req_id])
+		if _building_counts.get(req_id, 0) < required:
+			return false
+	return true
+
+func _format_requirements(requirements: Dictionary, include_header := false) -> String:
+	if requirements == null or requirements.is_empty():
+		return "Requires: None" if include_header else "None"
+	var parts := PackedStringArray()
+	for req_id in requirements.keys():
+		var required := int(requirements[req_id])
+		var req_data: Dictionary = BUILDING_LIBRARY.get_data(req_id)
+		var name: String = String(req_data.get("display_name", req_id.capitalize()))
+		parts.append("%s x%d" % [name, required])
+	var body := ", ".join(parts)
+	return "Requires: %s" % body if include_header else body
+
 func _format_button_text(data: Dictionary, count: int) -> String:
 	if data == null:
 		return "Structure (%d)" % count
 	return "%s (%d) – %s" % [data.get("display_name", "Structure"), count, _cost_to_text(data.get("cost", {}))]
 
 func _cost_to_text(cost: Dictionary) -> String:
-	if cost.is_empty():
-		return "Free"
-	var parts: Array[String] = []
+	if cost == null or cost.is_empty():
+		return "Cost: Free"
+	var parts: PackedStringArray = PackedStringArray()
 	for resource_name in cost.keys():
 		var amount := float(cost[resource_name])
 		if amount <= 0.0:
 			continue
 		parts.append("%s %.0f" % [resource_name.capitalize(), amount])
-	return ", ".join(parts)
+	return "Cost: %s" % ", ".join(parts)
 
 func _on_build_button_pressed(building_id: String) -> void:
 	build_requested.emit(building_id)
@@ -175,9 +190,21 @@ func _refresh_build_availability() -> void:
 		if button == null:
 			continue
 		var data := info.get("data") as Dictionary
-		var cost: Dictionary = data.get("cost", {})
-		var affordable: bool = _resource_manager.can_afford(cost)
-		button.disabled = not affordable
+		var requirements := data.get("requires", {}) as Dictionary
+		var unlocked := _requirements_met(requirements)
+		var cost := data.get("cost", {}) as Dictionary
+		var count := int(info.get("count", 0))
+		var cost_text: String = _cost_to_text(cost)
+		var req_text: String = _format_requirements(requirements, true)
+		if not unlocked:
+			button.disabled = true
+			button.text = "%s (locked)" % data.get("display_name", building_id.capitalize())
+			button.tooltip_text = cost_text if req_text == "Requires: None" else "%s\n%s" % [cost_text, req_text]
+		else:
+			button.text = _format_button_text(data, count)
+			button.tooltip_text = cost_text if req_text == "Requires: None" else "%s\n%s" % [cost_text, req_text]
+			var affordable: bool = _resource_manager and _resource_manager.can_afford(cost)
+			button.disabled = not affordable
 
 func _update_controls_reference() -> void:
 	var text := "[b]B[/b] — Focus construction panel\n"

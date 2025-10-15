@@ -5,9 +5,9 @@ Frontier Colony - Manual Test Checklist (Prototype)
 3. Let the simulation run for at least 30 seconds:
    - Verify energy, water, and food trend upward.
    - Ensure morale nudges upward when needs are met.
-4. Press `B` to focus the construction panel, build a Solar Panel, and confirm the button updates with the new count and the log records the success.
-5. Build one Water Extractor, then attempt to build a second immediately to verify the insufficient resources warning while totals stay unchanged.
-6. Build a Metal Mine and watch the metal resource increase after a few ticks; verify the resource line shows a positive delta.
+4. Press `B` to focus the construction panel, build a Metal Mine (the only unlocked option), and confirm the log records the success.
+5. With the Metal Mine in place, build a Solar Panel and ensure the resource delta for energy trends positive once it comes online.
+6. Build a Water Extractor, then a Hydroponics Bay, confirming each unlocks only after the prerequisite count is met and that food/water deltas turn positive.
 7. Construct a Foundry to begin producing components, then add a Research Lab to generate data; confirm their deltas turn positive once powered.
 8. Build a Battery Storage unit once resources allow and confirm the Power section reports the new battery capacity and charge.
 9. Toggle pause with `P`, then adjust tick speed with `[` and `]` to ensure the simulation speed responds correctly.

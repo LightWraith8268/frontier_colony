@@ -73,9 +73,8 @@ func _spawn_hud() -> void:
 	_update_status("Press B to focus the construction panel.")
 
 func _spawn_initial_colony() -> void:
-	for building_id in ["solar_panel", "water_extractor", "hydroponics_bay"]:
-		_create_and_register_building(building_id)
-	_update_status("Starter colony online. Build new structures from the panel.")
+	_refresh_building_counts_ui()
+	_update_status("Starter colony online. Build a Metal Mine to unlock further construction.")
 
 func _focus_build_panel() -> void:
 	if _hud_instance and _hud_instance.has_method("focus_build_panel"):

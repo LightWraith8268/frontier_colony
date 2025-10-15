@@ -14,11 +14,11 @@ const TRACKED_RESOURCES := [
 ]
 
 const STARTING_STOCK := {
-	"water": 10.0,
-	"metal": 12.0,
-	"energy": 20.0,
-	"food": 8.0,
-	"oxygen": 8.0,
+	"water": 30.0,
+	"metal": 20.0,
+	"energy": 30.0,
+	"food": 25.0,
+	"oxygen": 20.0,
 	"components": 0.0,
 	"data": 0.0,
 	"morale": 60.0,
@@ -26,15 +26,15 @@ const STARTING_STOCK := {
 }
 
 const COLONIST_NEEDS := {
-	"water": 0.4,
-	"food": 0.4,
-	"oxygen": 0.5
+	"water": 0.2,
+	"food": 0.2,
+	"oxygen": 0.25
 }
 const MORALE_GAIN_PER_TICK := 1.0
 const MORALE_LOSS_PER_SHORTAGE := 4.0
 const MIN_MORALE := 0.0
 const MAX_MORALE := 100.0
-const BASE_ENERGY_CAP := 20.0
+const BASE_ENERGY_CAP := 30.0
 
 var resources: Dictionary = {}
 @export var colonist_count: int = 5
@@ -213,12 +213,14 @@ func _balance_power_storage() -> void:
 			resources["energy"] = energy_available - to_store
 			resource_updated.emit("energy", resources["energy"])
 			_battery_charge += to_store
+			record_consumption("energy", to_store)
 	elif net < 0.0:
 		var deficit: float = min(-net, _battery_charge)
 		if deficit > 0.0:
 			_battery_charge -= deficit
 			resources["energy"] = float(resources.get("energy", 0.0)) + deficit
 			resource_updated.emit("energy", resources["energy"])
+			record_production("energy", deficit)
 
 func _emit_power_status() -> void:
 	var status: Dictionary = {
