@@ -1,0 +1,6 @@
+[gd_resource type="Theme" load_steps=2 format=3]
+
+[resource]
+default_font_size = 16
+default_base_scale = 1.0
+colors/AccentColor = Color(0.396078, 0.768627, 0.905882)

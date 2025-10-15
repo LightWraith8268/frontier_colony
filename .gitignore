@@ -1,3 +1,6 @@
 # Ignore markdown documentation except the public README
 *.md
 !README.md
+.import/
+saves/*
+!saves/.gdignore
