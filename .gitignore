@@ -1,0 +1,3 @@
+# Ignore markdown documentation except the public README
+*.md
+!README.md
