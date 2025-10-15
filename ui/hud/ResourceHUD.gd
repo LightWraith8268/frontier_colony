@@ -4,14 +4,14 @@ signal build_requested(building_id: String)
 
 const BUILDING_LIBRARY := preload("res://scripts/buildings/BuildingLibrary.gd")
 
-@onready var resource_grid: GridContainer = $MarginContainer/VBoxContainer/ResourcesPanel/Content/ResourceGrid
-@onready var power_bar: ProgressBar = $MarginContainer/VBoxContainer/PowerPanel/PowerContent/PowerRow/PowerBar
-@onready var power_label: Label = $MarginContainer/VBoxContainer/PowerPanel/PowerContent/PowerRow/PowerLabel
-@onready var battery_label: Label = $MarginContainer/VBoxContainer/PowerPanel/PowerContent/BatteryLabel
-@onready var build_buttons: VBoxContainer = $MarginContainer/VBoxContainer/BuildPanel/BuildContent/BuildButtons
-@onready var status_label: Label = $MarginContainer/VBoxContainer/StatusPanel/StatusContent/StatusLabel
-@onready var log_text: RichTextLabel = $MarginContainer/VBoxContainer/LogPanel/LogContent/LogText
-@onready var controls_value: RichTextLabel = $MarginContainer/VBoxContainer/ControlsPanel/ControlsContent/ControlsValue
+@onready var resource_grid: GridContainer = $ScrollContainer/MarginContainer/VBoxContainer/ResourcesPanel/Content/ResourceGrid
+@onready var power_bar: ProgressBar = $ScrollContainer/MarginContainer/VBoxContainer/PowerPanel/PowerContent/PowerRow/PowerBar
+@onready var power_label: Label = $ScrollContainer/MarginContainer/VBoxContainer/PowerPanel/PowerContent/PowerRow/PowerLabel
+@onready var battery_label: Label = $ScrollContainer/MarginContainer/VBoxContainer/PowerPanel/PowerContent/BatteryLabel
+@onready var build_buttons: VBoxContainer = $ScrollContainer/MarginContainer/VBoxContainer/BuildPanel/BuildContent/BuildButtons
+@onready var status_label: Label = $ScrollContainer/MarginContainer/VBoxContainer/StatusPanel/StatusContent/StatusLabel
+@onready var log_text: RichTextLabel = $ScrollContainer/MarginContainer/VBoxContainer/LogPanel/LogContent/LogText
+@onready var controls_value: RichTextLabel = $ScrollContainer/MarginContainer/VBoxContainer/ControlsPanel/ControlsContent/ControlsValue
 
 var _resource_manager: Node = null
 var _resource_labels: Dictionary = {}
