@@ -1,0 +1,11 @@
+Frontier Colony - Manual Test Checklist (Prototype)
+
+1. Launch the project via Godot 4.x (e.g., `Godot_v4.5-stable_win64.exe --path . --editor`) and run the main scene.
+2. Confirm the HUD shows all starting resources, colonists, and morale status.
+3. Let the simulation run for at least 30 seconds:
+   - Verify energy, water, and food trend upward.
+   - Ensure morale nudges upward when needs are met.
+4. Press `B` to open the build menu and place a new Solar Panel.
+5. Place one Water Extractor, then immediately attempt to place a second to confirm the insufficient resources warning and that totals stay unchanged.
+6. Toggle pause with `P`, then adjust tick speed with `[` and `]` to ensure the simulation speed responds correctly.
+7. After stockpiling water, place several Hydroponics Bays to overconsume water and observe morale falling plus slower production while shortages persist.

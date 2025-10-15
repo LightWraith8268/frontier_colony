@@ -9,7 +9,7 @@ config_version=5
 
 [application]
 config/name="Frontier Colony"
-run/main_scene=""
+run/main_scene="res://scenes/main/Main.tscn"
 
 [autoload]
 GameManager="*res://scripts/singletons/GameManager.gd"
