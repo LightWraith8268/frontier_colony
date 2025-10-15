@@ -13,16 +13,21 @@ const BUILDINGS := {
 		"display_name": "Water Extractor",
 		"scene": preload("res://scenes/buildings/WaterExtractor.tscn"),
 		"cost": {
-			"metal": 6.0,
-			"energy": 2.0
+			"metal": 6.0
+		}
+	},
+	"metal_mine": {
+		"display_name": "Metal Mine",
+		"scene": preload("res://scenes/buildings/MetalMine.tscn"),
+		"cost": {
+			"metal": 8.0
 		}
 	},
 	"battery_storage": {
 		"display_name": "Battery Storage",
 		"scene": preload("res://scenes/buildings/BatteryStorage.tscn"),
 		"cost": {
-			"metal": 5.0,
-			"components": 2.0
+			"metal": 5.0
 		}
 	},
 	"hydroponics_bay": {

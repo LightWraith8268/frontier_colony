@@ -1,7 +1,6 @@
 extends Node
 
 const HUD_SCENE := preload("res://ui/hud/ResourceHUD.tscn")
-const BUILD_MENU_SCENE := preload("res://ui/hud/BuildMenu.tscn")
 const BUILDING_LIBRARY := preload("res://scripts/buildings/BuildingLibrary.gd")
 
 @onready var buildings_root := $Buildings
@@ -9,7 +8,6 @@ const BUILDING_LIBRARY := preload("res://scripts/buildings/BuildingLibrary.gd")
 var _hud_instance: Control = null
 var _game_manager: Node = null
 var _resource_manager: Node = null
-var _build_menu_instance: Control = null
 var _building_counts: Dictionary = {}
 
 func _ready() -> void:
@@ -19,14 +17,13 @@ func _ready() -> void:
 		_resource_manager = get_node("/root/ResourceManager")
 	_ensure_input_mappings()
 	_spawn_hud()
-	_spawn_build_menu()
 	_spawn_initial_colony()
 
 func _exit_tree() -> void:
+	if _hud_instance and _hud_instance.has_signal("build_requested") and _hud_instance.build_requested.is_connected(_on_build_requested):
+		_hud_instance.build_requested.disconnect(_on_build_requested)
 	if _hud_instance and is_instance_valid(_hud_instance):
 		_hud_instance.queue_free()
-	if _build_menu_instance and is_instance_valid(_build_menu_instance):
-		_build_menu_instance.queue_free()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not _game_manager:
@@ -38,7 +35,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("speed_down"):
 		_game_manager.decrease_speed()
 	elif event.is_action_pressed("open_build_menu"):
-		_toggle_build_menu()
+		_focus_build_panel()
 
 func _ensure_input_mappings() -> void:
 	var defaults: Dictionary = {
@@ -70,30 +67,22 @@ func _spawn_hud() -> void:
 	_hud_instance = HUD_SCENE.instantiate()
 	UIManager.add_child(_hud_instance)
 	UIManager.register_hud(_hud_instance)
-	_update_status("Press B to open the build menu.")
-
-func _spawn_build_menu() -> void:
-	if _build_menu_instance:
-		return
-	_build_menu_instance = BUILD_MENU_SCENE.instantiate()
-	_build_menu_instance.building_chosen.connect(_on_building_chosen)
-	UIManager.add_child(_build_menu_instance)
+	if _hud_instance.has_signal("build_requested"):
+		_hud_instance.build_requested.connect(_on_build_requested)
+	_refresh_building_counts_ui()
+	_update_status("Press B to focus the construction panel.")
 
 func _spawn_initial_colony() -> void:
 	for building_id in ["solar_panel", "water_extractor", "hydroponics_bay"]:
 		_create_and_register_building(building_id)
-	_update_status("Starter colony online. Press B to expand.")
+	_update_status("Starter colony online. Build new structures from the panel.")
 
-func _toggle_build_menu() -> void:
-	if not _build_menu_instance:
-		return
-	_build_menu_instance.visible = not _build_menu_instance.visible
-	if _build_menu_instance.visible:
-		_update_status("Select a building to construct, or press B to close.")
-	else:
-		_update_status("Press B to open the build menu.")
+func _focus_build_panel() -> void:
+	if _hud_instance and _hud_instance.has_method("focus_build_panel"):
+		_hud_instance.focus_build_panel()
+	_update_status("Select a building to construct.")
 
-func _on_building_chosen(building_id: String) -> void:
+func _on_build_requested(building_id: String) -> void:
 	var data: Dictionary = BUILDING_LIBRARY.get_data(building_id)
 	var name: String = str(data.get("display_name", building_id))
 	if data.is_empty():
@@ -131,9 +120,7 @@ func _register_building(building_id: String, building: Node) -> void:
 
 func _refresh_building_counts_ui() -> void:
 	if _hud_instance and _hud_instance.has_method("update_building_counts"):
-		var counts: Dictionary = {}
-		for building_id in _building_counts.keys():
-			counts[building_id] = _building_counts[building_id]
+		var counts: Dictionary = _building_counts.duplicate(true)
 		_hud_instance.update_building_counts(counts)
 
 func _update_status(message: String) -> void:

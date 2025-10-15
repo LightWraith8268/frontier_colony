@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://metalmine"]
+
+[ext_resource type="Script" path="res://scripts/buildings/BaseBuilding.gd" id="1_h2v4m"]
+
+[node name="MetalMine" type="Node"]
+script = ExtResource("1_h2v4m")
+display_name = "Metal Mine"
+production = {
+"metal": 0.9
+}
+consumption = {
+"energy": 1.2
+}

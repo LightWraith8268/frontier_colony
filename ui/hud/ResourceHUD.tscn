@@ -13,9 +13,11 @@ script = ExtResource("1_ebpfe")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
-anchors_preset = 0
-offset_right = 280.0
-offset_bottom = 240.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 16
@@ -25,77 +27,129 @@ theme_override_constants/margin_bottom = 16
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_constants/separation = 12
 
-[node name="Header" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="Title" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Frontier Colony Console"
-theme_override_font_sizes/font_size = 18
+text = "Frontier Colony Control Console"
+theme_override_font_sizes/font_size = 20
 
-[node name="ResourceHeader" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="ResourcesPanel" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Content" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ResourcesPanel"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ResourcesHeader" type="Label" parent="MarginContainer/VBoxContainer/ResourcesPanel/Content"]
 layout_mode = 2
 text = "Resources"
 theme_override_font_sizes/font_size = 16
 
-[node name="ResourceGrid" type="GridContainer" parent="MarginContainer/VBoxContainer"]
+[node name="ResourceGrid" type="GridContainer" parent="MarginContainer/VBoxContainer/ResourcesPanel/Content"]
 layout_mode = 2
-size_flags_horizontal = 3
 columns = 2
+theme_override_constants/v_separation = 2
+theme_override_constants/h_separation = 24
 
-[node name="BuildingHeader" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="PowerPanel" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Structures"
-theme_override_font_sizes/font_size = 16
 
-[node name="BuildingGrid" type="GridContainer" parent="MarginContainer/VBoxContainer"]
+[node name="PowerContent" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PowerPanel"]
 layout_mode = 2
-columns = 1
+theme_override_constants/separation = 6
 
-[node name="PowerHeader" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="PowerHeader" type="Label" parent="MarginContainer/VBoxContainer/PowerPanel/PowerContent"]
 layout_mode = 2
 text = "Power"
 theme_override_font_sizes/font_size = 16
 
-[node name="PowerBox" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="PowerRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer/PowerPanel/PowerContent"]
 layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
 
-[node name="PowerSummary" type="Label" parent="MarginContainer/VBoxContainer/PowerBox"]
+[node name="PowerBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/PowerPanel/PowerContent/PowerRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+value = 0.0
+
+[node name="PowerLabel" type="Label" parent="MarginContainer/VBoxContainer/PowerPanel/PowerContent/PowerRow"]
 layout_mode = 2
 text = "Net: 0.00"
 
-[node name="BatterySummary" type="Label" parent="MarginContainer/VBoxContainer/PowerBox"]
+[node name="BatteryLabel" type="Label" parent="MarginContainer/VBoxContainer/PowerPanel/PowerContent"]
 layout_mode = 2
 text = "Battery: 0.00 / 0.00"
 
-[node name="Separator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+[node name="BuildPanel" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="StatusHeader" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="BuildContent" type="VBoxContainer" parent="MarginContainer/VBoxContainer/BuildPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="BuildHeader" type="Label" parent="MarginContainer/VBoxContainer/BuildPanel/BuildContent"]
+layout_mode = 2
+text = "Construction"
+theme_override_font_sizes/font_size = 16
+
+[node name="BuildButtons" type="VBoxContainer" parent="MarginContainer/VBoxContainer/BuildPanel/BuildContent"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="StatusPanel" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="StatusContent" type="VBoxContainer" parent="MarginContainer/VBoxContainer/StatusPanel"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="StatusHeader" type="Label" parent="MarginContainer/VBoxContainer/StatusPanel/StatusContent"]
 layout_mode = 2
 text = "Latest Status"
+theme_override_font_sizes/font_size = 16
 
-[node name="StatusLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="StatusLabel" type="Label" parent="MarginContainer/VBoxContainer/StatusPanel/StatusContent"]
 layout_mode = 2
 autowrap_mode = 3
 text = "--"
 
-[node name="LogHeader" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="LogPanel" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LogContent" type="VBoxContainer" parent="MarginContainer/VBoxContainer/LogPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 6
+
+[node name="LogHeader" type="Label" parent="MarginContainer/VBoxContainer/LogPanel/LogContent"]
 layout_mode = 2
 text = "Event Log"
+theme_override_font_sizes/font_size = 16
 
-[node name="LogPanel" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+[node name="LogText" type="RichTextLabel" parent="MarginContainer/VBoxContainer/LogPanel/LogContent"]
 layout_mode = 2
 size_flags_vertical = 3
 scroll_active = true
 bbcode_enabled = true
-text = ""
 
-[node name="ControlsHeader" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="ControlsPanel" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ControlsContent" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ControlsPanel"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ControlsHeader" type="Label" parent="MarginContainer/VBoxContainer/ControlsPanel/ControlsContent"]
 layout_mode = 2
 text = "Controls"
+theme_override_font_sizes/font_size = 16
 
-[node name="ControlsValue" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+[node name="ControlsValue" type="RichTextLabel" parent="MarginContainer/VBoxContainer/ControlsPanel/ControlsContent"]
 layout_mode = 2
-size_flags_vertical = 1
-scroll_active = false
+size_flags_horizontal = 3
 bbcode_enabled = true
-text = ""
