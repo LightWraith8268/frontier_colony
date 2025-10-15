@@ -27,6 +27,14 @@ func _can_produce(resource_manager: Node) -> bool:
 		var cost = consumption[resource_name]
 		if cost <= 0.0:
 			continue
+		cost = float(cost)
+		if resource_name == "energy" and resource_manager.has_method("ensure_energy"):
+			if not resource_manager.ensure_energy(cost):
+				if resource_manager.has_method("note_power_shortage"):
+					resource_manager.note_power_shortage()
+				return false
 		if resource_manager.get_resource_amount(resource_name) < cost:
+			if resource_name == "energy" and resource_manager.has_method("note_power_shortage"):
+				resource_manager.note_power_shortage()
 			return false
 	return true

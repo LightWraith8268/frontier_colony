@@ -17,6 +17,14 @@ const BUILDINGS := {
 			"energy": 2.0
 		}
 	},
+	"battery_storage": {
+		"display_name": "Battery Storage",
+		"scene": preload("res://scenes/buildings/BatteryStorage.tscn"),
+		"cost": {
+			"metal": 5.0,
+			"components": 2.0
+		}
+	},
 	"hydroponics_bay": {
 		"display_name": "Hydroponics Bay",
 		"scene": preload("res://scenes/buildings/HydroponicsBay.tscn"),
@@ -28,7 +36,9 @@ const BUILDINGS := {
 }
 
 static func get_ids() -> Array:
-	return BUILDINGS.keys()
+	var ids := BUILDINGS.keys()
+	ids.sort()
+	return ids
 
 static func get_data(building_id: String) -> Dictionary:
 	return BUILDINGS.get(building_id, {})

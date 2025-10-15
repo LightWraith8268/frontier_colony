@@ -28,26 +28,74 @@ size_flags_vertical = 3
 
 [node name="Header" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Colony Resources"
+text = "Frontier Colony Console"
 theme_override_font_sizes/font_size = 18
 
-[node name="ResourceList" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="ResourceHeader" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 3
+text = "Resources"
+theme_override_font_sizes/font_size = 16
+
+[node name="ResourceGrid" type="GridContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+columns = 2
 
 [node name="BuildingHeader" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Structures"
 theme_override_font_sizes/font_size = 16
 
-[node name="BuildingList" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="BuildingGrid" type="GridContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 1
+columns = 1
+
+[node name="PowerHeader" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Power"
+theme_override_font_sizes/font_size = 16
+
+[node name="PowerBox" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="PowerSummary" type="Label" parent="MarginContainer/VBoxContainer/PowerBox"]
+layout_mode = 2
+text = "Net: 0.00"
+
+[node name="BatterySummary" type="Label" parent="MarginContainer/VBoxContainer/PowerBox"]
+layout_mode = 2
+text = "Battery: 0.00 / 0.00"
 
 [node name="Separator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
+[node name="StatusHeader" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Latest Status"
+
 [node name="StatusLabel" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 autowrap_mode = 3
-text = "Status: --"
+text = "--"
+
+[node name="LogHeader" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Event Log"
+
+[node name="LogPanel" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+scroll_active = true
+bbcode_enabled = true
+text = ""
+
+[node name="ControlsHeader" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Controls"
+
+[node name="ControlsValue" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+scroll_active = false
+bbcode_enabled = true
+text = ""
