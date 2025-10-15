@@ -5,7 +5,7 @@ Frontier Colony - Manual Test Checklist (Prototype)
 3. Let the simulation run for at least 30 seconds:
    - Verify energy, water, and food trend upward.
    - Ensure morale nudges upward when needs are met.
-4. Press `B` to open the build menu and place a new Solar Panel; confirm the “Structures” list adds the new entry and the status message acknowledges construction.
-5. Place one Water Extractor, then immediately attempt to place a second to confirm the insufficient resources warning, ensuring resource totals stay unchanged and no new structure entry appears.
+4. Press `B` to open the build menu, click the Solar Panel button, and confirm the “Structures” list adds the new entry alongside a success status message.
+5. Still in the menu, attempt to construct a Water Extractor twice: the first succeeds, the second should warn about insufficient resources while leaving totals and structure counts unchanged.
 6. Toggle pause with `P`, then adjust tick speed with `[` and `]` to ensure the simulation speed responds correctly.
 7. After stockpiling water, place several Hydroponics Bays to overconsume water and observe morale falling plus slower production while shortages persist.

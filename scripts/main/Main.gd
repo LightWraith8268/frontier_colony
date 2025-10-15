@@ -10,7 +10,6 @@ var _hud_instance: Control = null
 var _game_manager: Node = null
 var _resource_manager: Node = null
 var _build_menu_instance: Control = null
-var _pending_building_id: String = ""
 var _building_counts: Dictionary = {}
 
 func _ready() -> void:
@@ -40,11 +39,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		_game_manager.decrease_speed()
 	elif event.is_action_pressed("open_build_menu"):
 		_toggle_build_menu()
-	elif event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
-			_attempt_place_building()
-		elif event.button_index == MOUSE_BUTTON_RIGHT and event.is_pressed():
-			_clear_pending_building()
 
 func _ensure_input_mappings() -> void:
 	var defaults: Dictionary = {
@@ -95,45 +89,30 @@ func _toggle_build_menu() -> void:
 		return
 	_build_menu_instance.visible = not _build_menu_instance.visible
 	if _build_menu_instance.visible:
-		_update_status("Select a building to place, or right click to cancel.")
-	elif _pending_building_id.is_empty():
+		_update_status("Select a building to construct, or press B to close.")
+	else:
 		_update_status("Press B to open the build menu.")
 
 func _on_building_chosen(building_id: String) -> void:
-	_pending_building_id = building_id
-	if _build_menu_instance:
-		_build_menu_instance.hide()
 	var data: Dictionary = BUILDING_LIBRARY.get_data(building_id)
 	var name: String = str(data.get("display_name", building_id))
-	_update_status("Placing %s: left click to confirm, right click to cancel." % name)
-
-func _attempt_place_building() -> void:
-	if _pending_building_id.is_empty() or not _resource_manager:
-		return
-	var data: Dictionary = BUILDING_LIBRARY.get_data(_pending_building_id)
 	if data.is_empty():
-		_update_status("Unknown building selection.")
-		_pending_building_id = ""
+		_update_status("Unknown structure selection.")
+		return
+	if not _resource_manager:
+		_update_status("Resource manager unavailable.")
 		return
 	var cost: Dictionary = data.get("cost", {})
-	var name: String = str(data.get("display_name", _pending_building_id))
 	if not _resource_manager.can_afford(cost):
 		_update_status("Not enough resources for %s." % name)
 		return
 	if not _resource_manager.pay(cost):
 		_update_status("Payment failed for %s." % name)
 		return
-	if _create_and_register_building(_pending_building_id):
+	if _create_and_register_building(building_id):
 		_update_status("%s constructed." % name)
 	else:
 		_update_status("Failed to create %s." % name)
-	_pending_building_id = ""
-
-func _clear_pending_building() -> void:
-	if _pending_building_id.is_empty():
-		return
-	_pending_building_id = ""
-	_update_status("Placement canceled. Press B for the build menu.")
 
 func _create_and_register_building(building_id: String) -> bool:
 	if not buildings_root:

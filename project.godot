@@ -1,22 +1,31 @@
 ; Engine configuration file.
-; It's best edited using the editor.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
 ;
 ; Format:
-;   [section] ; Section Name
-;   param=value ; Setting
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
 
 config_version=5
 
 [application]
+
 config/name="Frontier Colony"
 run/main_scene="res://scenes/main/Main.tscn"
+config/features=PackedStringArray("4.5")
 
 [autoload]
+
 GameManager="*res://scripts/singletons/GameManager.gd"
 ResourceManager="*res://scripts/singletons/ResourceManager.gd"
 UIManager="*res://scripts/singletons/UIManager.gd"
 
+[gui]
+
+theme/custom="res://ui/themes/base_theme.tres"
+
 [input]
+
 toggle_overlay={
 "deadzone": 0.5,
 "events": []
@@ -37,9 +46,3 @@ speed_down={
 "deadzone": 0.5,
 "events": []
 }
-
-[gui]
-theme/custom="res://ui/themes/base_theme.tres"
-
-[rendering]
-renderer/rendering_method="forward_plus"

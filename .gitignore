@@ -4,3 +4,5 @@
 .import/
 saves/*
 !saves/.gdignore
+.godot/
+*.gd.uid
