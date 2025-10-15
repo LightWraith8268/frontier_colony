@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://foundry"]
+
+[ext_resource type="Script" path="res://scripts/buildings/BaseBuilding.gd" id="1_e3y7x"]
+
+[node name="Foundry" type="Node"]
+script = ExtResource("1_e3y7x")
+display_name = "Foundry"
+production = {
+"components": 0.6
+}
+consumption = {
+"metal": 1.8,
+"energy": 1.2
+}

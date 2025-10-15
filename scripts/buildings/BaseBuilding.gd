@@ -12,15 +12,22 @@ func _ready() -> void:
 func produce_tick(resource_manager: Node) -> void:
 	if _can_produce(resource_manager):
 		for resource_name in consumption.keys():
-			var cost = consumption[resource_name]
+			var cost := float(consumption[resource_name])
 			if cost > 0.0:
+				if resource_manager.has_method("record_consumption"):
+					resource_manager.record_consumption(resource_name, cost)
 				resource_manager.consume(resource_name, cost)
 		var output_multiplier := 1.0
 		if resource_manager.has_method("get_morale_multiplier"):
 			output_multiplier = resource_manager.get_morale_multiplier()
 		output_multiplier = max(0.0, output_multiplier + morale_bonus)
 		for resource_name in production.keys():
-			resource_manager.add(resource_name, production[resource_name] * output_multiplier)
+			var produced := float(production[resource_name]) * output_multiplier
+			if produced <= 0.0:
+				continue
+			if resource_manager.has_method("record_production"):
+				resource_manager.record_production(resource_name, produced)
+			resource_manager.add(resource_name, produced)
 
 func _can_produce(resource_manager: Node) -> bool:
 	for resource_name in consumption.keys():

@@ -17,6 +17,8 @@ var _resource_manager: Node = null
 var _resource_labels: Dictionary = {}
 var _build_buttons: Dictionary = {}
 var _building_counts: Dictionary = {}
+var _resource_values: Dictionary = {}
+var _flow_summary: Dictionary = {}
 var _log_buffer: Array[String] = []
 const MAX_LOG_ENTRIES := 30
 
@@ -32,9 +34,8 @@ func _ready() -> void:
 func update_resource_display(resource_name: String, new_value: float) -> void:
 	if not _resource_labels.has(resource_name):
 		_add_resource_label(resource_name, new_value)
-	var label := _resource_labels[resource_name] as Label
-	if label:
-		label.text = _format_resource_line(resource_name, new_value)
+	_resource_values[resource_name] = new_value
+	_refresh_resource_label(resource_name)
 	_refresh_build_availability()
 
 func update_building_counts(counts: Dictionary) -> void:
@@ -64,6 +65,13 @@ func update_power_status(power_data: Dictionary) -> void:
 	power_label.text = "Net: %s (Gen %.2f / Use %.2f) | Shortages: %d" % [_format_signed(net), generation, consumption, shortages]
 	battery_label.text = "Battery: %.2f / %.2f" % [charge, capacity]
 
+func update_resource_flow(resource_name: String, production: float, consumption: float) -> void:
+	_flow_summary[resource_name] = {
+		"production": production,
+		"consumption": consumption
+	}
+	_refresh_resource_label(resource_name)
+
 func set_status_message(message: String) -> void:
 	status_label.text = message
 	append_log(message)
@@ -87,9 +95,18 @@ func focus_build_panel() -> void:
 func _add_resource_label(resource_name: String, value: float) -> void:
 	var label := Label.new()
 	label.name = resource_name
-	label.text = _format_resource_line(resource_name, value)
 	_resource_labels[resource_name] = label
 	resource_grid.add_child(label)
+	_resource_values[resource_name] = value
+	_refresh_resource_label(resource_name)
+
+func _refresh_resource_label(resource_name: String) -> void:
+	var label := _resource_labels.get(resource_name) as Label
+	if label == null:
+		return
+	var value := float(_resource_values.get(resource_name, 0.0))
+	label.text = _format_resource_line(resource_name, value)
+	label.tooltip_text = _format_resource_tooltip(resource_name)
 
 func _create_build_buttons() -> void:
 	for building_id in BUILDING_LIBRARY.get_ids():
@@ -107,7 +124,11 @@ func _create_build_buttons() -> void:
 		}
 
 func _format_resource_line(resource_name: String, value: float) -> String:
-	return "%s: %s" % [resource_name.capitalize(), _format_resource_value(resource_name, value)]
+	var flow := _flow_summary.get(resource_name, {}) as Dictionary
+	var production := float(flow.get("production", 0.0))
+	var consumption := float(flow.get("consumption", 0.0))
+	var net := production - consumption
+	return "%s: %s (Δ %s)" % [resource_name.capitalize(), _format_resource_value(resource_name, value), _format_signed(net)]
 
 func _format_resource_value(resource_name: String, value: float) -> String:
 	match resource_name:
@@ -117,6 +138,12 @@ func _format_resource_value(resource_name: String, value: float) -> String:
 			return "%d%%" % int(round(value))
 		_:
 			return "%.2f" % value
+
+func _format_resource_tooltip(resource_name: String) -> String:
+	var flow := _flow_summary.get(resource_name, {}) as Dictionary
+	var production := float(flow.get("production", 0.0))
+	var consumption := float(flow.get("consumption", 0.0))
+	return "Production: %.2f\nConsumption: %.2f" % [production, consumption]
 
 func _format_button_text(data: Dictionary, count: int) -> String:
 	if data == null:

@@ -34,11 +34,13 @@ const MORALE_GAIN_PER_TICK := 1.0
 const MORALE_LOSS_PER_SHORTAGE := 4.0
 const MIN_MORALE := 0.0
 const MAX_MORALE := 100.0
+const BASE_ENERGY_CAP := 20.0
 
 var resources: Dictionary = {}
 @export var colonist_count: int = 5
 signal resource_updated(resource_name: String, new_value: float)
 signal power_status_changed(power_data: Dictionary)
+signal resource_flow_changed(resource_name: String, production: float, consumption: float)
 
 var _energy_generated_last_tick: float = 0.0
 var _energy_consumed_last_tick: float = 0.0
@@ -47,6 +49,8 @@ var _battery_charge: float = 0.0
 var _battery_capacity_total: float = 0.0
 var _battery_registry: Dictionary = {}
 var _last_power_status: Dictionary = {}
+var _production_this_tick: Dictionary = {}
+var _consumption_this_tick: Dictionary = {}
 
 func _ready() -> void:
 	for resource_name in TRACKED_RESOURCES:
@@ -103,7 +107,9 @@ func tick() -> void:
 	_apply_colonist_needs()
 	_run_producers()
 	_balance_power_storage()
+	_enforce_energy_cap()
 	_emit_power_status()
+	_emit_resource_flows()
 
 func get_morale_multiplier() -> float:
 	var morale: float = float(resources.get("morale", 50.0))
@@ -120,10 +126,12 @@ func _apply_colonist_needs() -> void:
 			continue
 		var available: float = float(resources.get(resource_name, 0.0))
 		if available >= required:
+			record_consumption(resource_name, required)
 			resources[resource_name] = available - required
 			resource_updated.emit(resource_name, resources[resource_name])
 		else:
 			if available > 0.0:
+				record_consumption(resource_name, available)
 				resources[resource_name] = 0.0
 				resource_updated.emit(resource_name, 0.0)
 			shortages += 1
@@ -157,6 +165,7 @@ func ensure_energy(required: float) -> bool:
 		_battery_charge -= drawn
 		resources["energy"] = available + drawn
 		resource_updated.emit("energy", resources["energy"])
+		record_production("energy", drawn)
 	available = float(resources.get("energy", 0.0))
 	return available >= required
 
@@ -186,6 +195,8 @@ func _reset_tick_counters() -> void:
 	_energy_generated_last_tick = 0.0
 	_energy_consumed_last_tick = 0.0
 	_power_shortages = 0
+	_production_this_tick.clear()
+	_consumption_this_tick.clear()
 
 func _balance_power_storage() -> void:
 	if _battery_capacity_total <= 0.0:
@@ -220,3 +231,32 @@ func _emit_power_status() -> void:
 	}
 	_last_power_status = status
 	power_status_changed.emit(status)
+
+func _emit_resource_flows() -> void:
+	var resource_names := PackedStringArray(_production_this_tick.keys())
+	for resource_name in _consumption_this_tick.keys():
+		if not resource_names.has(resource_name):
+			resource_names.append(resource_name)
+	for resource_name in resource_names:
+		var production := float(_production_this_tick.get(resource_name, 0.0))
+		var consumption := float(_consumption_this_tick.get(resource_name, 0.0))
+		resource_flow_changed.emit(resource_name, production, consumption)
+
+func record_production(resource_name: String, amount: float) -> void:
+	if amount <= 0.0:
+		return
+	_production_this_tick[resource_name] = float(_production_this_tick.get(resource_name, 0.0)) + amount
+
+func record_consumption(resource_name: String, amount: float) -> void:
+	if amount <= 0.0:
+		return
+	_consumption_this_tick[resource_name] = float(_consumption_this_tick.get(resource_name, 0.0)) + amount
+
+func _enforce_energy_cap() -> void:
+	var cap := _battery_capacity_total
+	if cap <= 0.0:
+		cap = BASE_ENERGY_CAP
+	var current := float(resources.get("energy", 0.0))
+	if current > cap:
+		resources["energy"] = cap
+		resource_updated.emit("energy", cap)

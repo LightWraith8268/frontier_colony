@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://researchlab"]
+
+[ext_resource type="Script" path="res://scripts/buildings/BaseBuilding.gd" id="1_qls2r"]
+
+[node name="ResearchLab" type="Node"]
+script = ExtResource("1_qls2r")
+display_name = "Research Lab"
+production = {
+"data": 0.3
+}
+consumption = {
+"components": 0.4,
+"energy": 1.0
+}

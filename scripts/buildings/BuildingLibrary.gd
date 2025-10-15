@@ -20,7 +20,8 @@ const BUILDINGS := {
 		"display_name": "Metal Mine",
 		"scene": preload("res://scenes/buildings/MetalMine.tscn"),
 		"cost": {
-			"metal": 8.0
+			"metal": 8.0,
+			"energy": 2.0
 		}
 	},
 	"battery_storage": {
@@ -36,6 +37,22 @@ const BUILDINGS := {
 		"cost": {
 			"metal": 6.0,
 			"water": 3.0
+		}
+	},
+	"foundry": {
+		"display_name": "Foundry",
+		"scene": preload("res://scenes/buildings/Foundry.tscn"),
+		"cost": {
+			"metal": 10.0,
+			"energy": 2.0
+		}
+	},
+	"research_lab": {
+		"display_name": "Research Lab",
+		"scene": preload("res://scenes/buildings/ResearchLab.tscn"),
+		"cost": {
+			"components": 2.0,
+			"energy": 2.5
 		}
 	}
 }
