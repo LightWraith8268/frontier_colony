@@ -35,6 +35,15 @@ theme_override_font_sizes/font_size = 18
 layout_mode = 2
 size_flags_vertical = 3
 
+[node name="BuildingHeader" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Structures"
+theme_override_font_sizes/font_size = 16
+
+[node name="BuildingList" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+
 [node name="Separator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/buildings/BaseBuilding.gd" id="1_v0q2q"]
 
-[node name="WaterExtractor" type="Node2D"]
+[node name="WaterExtractor" type="Node"]
 script = ExtResource("1_v0q2q")
 display_name = "Water Extractor"
 production = {
@@ -11,7 +11,3 @@ production = {
 consumption = {
 "energy": 0.5
 }
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-modulate = Color(0.588235, 0.745098, 0.815686, 1)
-scale = Vector2(0.5, 0.5)
